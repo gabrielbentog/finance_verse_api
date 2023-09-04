@@ -8,6 +8,9 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :validatable
   include DeviseTokenAuth::Concerns::User
 
+  has_many :user_cryptos
+  has_many :cryptos, through: :user_cryptos
+
   attr_accessor :auth_token
 
 end
