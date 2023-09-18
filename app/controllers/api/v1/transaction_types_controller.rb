@@ -6,12 +6,12 @@ class Api::V1::TransactionTypesController < ApplicationController
   def index
     @transaction_types = TransactionType.all
 
-    render json: TransactionTypeSerializer.new(@transaction_types).serialized_json
+    render json: TransactionTypeSerializer.new(@transaction_types).serializable_hash.to_json
   end
 
   # GET api/v1/transaction_types/1
   def show
-      render json: TransactionTypeSerializer.new(@transaction_type).serialized_json if stale?(@transaction_type)
+      render json: TransactionTypeSerializer.new(@transaction_type).serializable_hash.to_json if stale?(@transaction_type)
   end
 
   # POST api/v1/transaction_types
@@ -19,7 +19,7 @@ class Api::V1::TransactionTypesController < ApplicationController
     @transaction_type = TransactionType.new(transaction_type_params)
 
     if @transaction_type.save && current_user_admin?
-      render json: TransactionTypeSerializer.new(@transaction_type).serialized_json, status: :created
+      render json: TransactionTypeSerializer.new(@transaction_type).serializable_hash.to_json, status: :created
     else
       render json: ErrorSerializer.serialize(@transaction_type.errors), status: :unprocessable_entity
     end
@@ -29,7 +29,7 @@ class Api::V1::TransactionTypesController < ApplicationController
   def update
     if current_user_admin?
       if @transaction_type.update(transaction_type_params)
-        render json: TransactionTypeSerializer.new(@transaction_type).serialized_json
+        render json: TransactionTypeSerializer.new(@transaction_type).serializable_hash.to_json
       else
         render json: ErrorSerializer.serialize(@transaction_type.errors), status: :unprocessable_entity
       end

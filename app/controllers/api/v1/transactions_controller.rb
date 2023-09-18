@@ -6,13 +6,13 @@ class Api::V1::TransactionsController < ApplicationController
   def index
     @transactions = current_user.transactions
 
-    render json: TransactionSerializer.new(@transactions).serialized_json
+    render json: TransactionSerializer.new(@transactions).serializable_hash.to_json
   end
 
   # GET api/v1/transactions/1
   def show
     if @transaction.user == current_user
-      render json: TransactionSerializer.new(@transaction).serialized_json if stale?(@transaction)
+      render json: TransactionSerializer.new(@transaction).serializable_hash.to_json if stale?(@transaction)
     else
       @transaction.errors.add(:base, "O Usuário atual não possui permissão para isso!")
 
@@ -24,7 +24,7 @@ class Api::V1::TransactionsController < ApplicationController
     @transaction = Transaction.new(transaction_params)
 
     if @transaction.save
-      render json: TransactionSerializer.new(@transaction).serialized_json, status: :created
+      render json: TransactionSerializer.new(@transaction).serializable_hash.to_json, status: :created
     else
       render json: ErrorSerializer.serialize(@transaction.errors), status: :unprocessable_entity
     end
@@ -34,7 +34,7 @@ class Api::V1::TransactionsController < ApplicationController
   def update
     if @transaction.user == current_user
       if @transaction.update(transaction_params)
-        render json: TransactionSerializer.new(@transaction).serialized_json
+        render json: TransactionSerializer.new(@transaction).serializable_hash.to_json
       else
         render json: ErrorSerializer.serialize(@transaction.errors), status: :unprocessable_entity
       end

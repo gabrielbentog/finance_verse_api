@@ -48,7 +48,7 @@ end
 
 
 # Serializers
-gem 'fast_jsonapi'
+gem 'jsonapi-serializer'
 gem 'active_model_serializers'
 
 # Auth

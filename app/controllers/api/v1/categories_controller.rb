@@ -6,12 +6,12 @@ class Api::V1::TransactionTypesController < ApplicationController
   def index
     @categories = TransactionType.all
 
-    render json: TransactionTypeSerializer.new(@categories).serialized_json
+    render json: TransactionTypeSerializer.new(@categories).serializable_hash.to_json
   end
 
   # GET api/v1/categories/1
   def show
-      render json: TransactionTypeSerializer.new(@category).serialized_json if stale?(@category)
+      render json: TransactionTypeSerializer.new(@category).serializable_hash.to_json if stale?(@category)
   end
 
   # POST api/v1/categories
@@ -19,7 +19,7 @@ class Api::V1::TransactionTypesController < ApplicationController
     @category = TransactionType.new(category_params)
 
     if @category.save && current_user_admin?
-      render json: TransactionTypeSerializer.new(@category).serialized_json, status: :created
+      render json: TransactionTypeSerializer.new(@category).serializable_hash.to_json, status: :created
     else
       render json: ErrorSerializer.serialize(@category.errors), status: :unprocessable_entity
     end
@@ -29,7 +29,7 @@ class Api::V1::TransactionTypesController < ApplicationController
   def update
     if current_user_admin?
       if @category.update(category_params)
-        render json: TransactionTypeSerializer.new(@category).serialized_json
+        render json: TransactionTypeSerializer.new(@category).serializable_hash.to_json
       else
         render json: ErrorSerializer.serialize(@category.errors), status: :unprocessable_entity
       end

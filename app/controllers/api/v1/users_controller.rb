@@ -9,13 +9,13 @@ class Api::V1::UsersController < ApplicationController
     else
       @users = User.all
     end
-    render json: UserSerializer.new(@users).serialized_json
+    render json: UserSerializer.new(@users).serializable_hash.to_json
   end
 
   # GET api/v1/users/1
   def show
     if @user.user == current_user || current_user_admin?
-      render json: UserSerializer.new(@user).serialized_json if stale?(@user)
+      render json: UserSerializer.new(@user).serializable_hash.to_json if stale?(@user)
     else
       @task.errors.add(:base, "O Usuário atual não possui permissão para isso!")
 
@@ -27,7 +27,7 @@ class Api::V1::UsersController < ApplicationController
     @user = User.new(user_params)
 
     if @user.save
-      render json: UserSerializer.new(@user).serialized_json, status: :created
+      render json: UserSerializer.new(@user).serializable_hash.to_json, status: :created
     else
       render json: ErrorSerializer.serialize(@user.errors), status: :unprocessable_entity
     end
@@ -37,7 +37,7 @@ class Api::V1::UsersController < ApplicationController
   def update
     if @user == current_user || current_user_admin?
       if @user.update(user_params)
-        render json: UserSerializer.new(@user).serialized_json
+        render json: UserSerializer.new(@user).serializable_hash.to_json
       else
         render json: ErrorSerializer.serialize(@user.errors), status: :unprocessable_entity
       end
