@@ -5,7 +5,7 @@ class Api::V1::AuthenticationController < ApplicationController
     @resource = User.find_for_database_authentication(email: params[:email])
     if @resource&.valid_password?(params[:password])
       sign_in(:user, @resource, store: false, bypass: false)
-      byebug
+
       @resource.auth_token = @resource.create_new_auth_token["Authorization"]
       render json: UserSerializer.new(@resource).serializable_hash.to_json
     else
