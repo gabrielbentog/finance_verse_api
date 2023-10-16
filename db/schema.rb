@@ -14,30 +14,14 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_11_190020) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "categories", force: :cascade do |t|
-    t.string "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "transaction_types", force: :cascade do |t|
-    t.string "name"
-    t.bigint "category_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["category_id"], name: "index_transaction_types_on_category_id"
-  end
-
   create_table "transactions", force: :cascade do |t|
     t.bigint "user_id", null: false
-    t.bigint "transaction_type_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.decimal "amount"
     t.date "date"
     t.string "item_name"
     t.text "description"
-    t.index ["transaction_type_id"], name: "index_transactions_on_transaction_type_id"
     t.index ["user_id"], name: "index_transactions_on_user_id"
   end
 
@@ -57,17 +41,15 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_11_190020) do
     t.string "nickname"
     t.string "image"
     t.string "email"
+    t.boolean "is_admin", default: false
     t.json "tokens"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "is_admin", default: false
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["uid", "provider"], name: "index_users_on_uid_and_provider", unique: true
   end
 
-  add_foreign_key "transaction_types", "categories"
-  add_foreign_key "transactions", "transaction_types"
   add_foreign_key "transactions", "users"
 end
